@@ -13,3 +13,7 @@ Usage:
 goperf --uri http://domain.to.test/somepage.html --request 10 #the number of requests
 
 it will (should) return the average loading time of the specified uri
+
+Licence
+---
+This software is distributed with the [http://www.gnu.org/licenses/gpl.html](GPLv3 license)
