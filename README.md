@@ -16,4 +16,4 @@ it will (should) return the average loading time of the specified uri
 
 Licence
 ---
-This software is distributed with the [http://www.gnu.org/licenses/gpl.html](GPLv3 license)
+This software is distributed with the [GPLv3 license](http://www.gnu.org/licenses/gpl.html)
