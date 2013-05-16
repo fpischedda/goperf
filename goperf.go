@@ -3,6 +3,7 @@ package main
 import (
     "fmt"
     "flag"
+    "os"
     "io/ioutil"
     "net/http"
     "time"
@@ -18,7 +19,7 @@ func avg_load_time(uri string, times int) float64 {
 
     for ; counter > 0; counter-- {
 
-        go time_uri(uri, wait_chan)
+        go func() { wait_chan <- time_uri(uri) }()
     }
 
     var total int64
@@ -34,12 +35,12 @@ func avg_load_time(uri string, times int) float64 {
 
 // time_uri fecth the specified uri and send the time.Duration of the operation
 // to the specified res chan
-func time_uri(uri string, res chan time.Duration) {
+func time_uri(uri string) time.Duration {
 
     start_time := time.Now()
     get_uri(uri)
 
-    res <- time.Since(start_time)
+    return time.Since(start_time)
 }
 
 // get_uri tryes to fetch the specified uri and returs its content as bytes
@@ -64,7 +65,6 @@ func get_uri(uri string) (body []byte, err error) {
 var Usage = func() {
     usage := "goperf --uri http://uri.to.test/ [--requests 10]"
     fmt.Fprintf(os.Stderr, "Usage of %s:\n%s\n", os.Args[0], usage)
-    PrintDefaults()
 }
 
 func main(){
