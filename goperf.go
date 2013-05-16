@@ -8,6 +8,9 @@ import (
     "time"
 )
 
+// avg_load_time returns the average response time of the specified uri
+// expressed in seconds. The uri is fetched n="times" times and the average
+// load time is computed
 func avg_load_time(uri string, times int) float64 {
 
     counter := times
@@ -15,7 +18,7 @@ func avg_load_time(uri string, times int) float64 {
 
     for ; counter > 0; counter-- {
 
-        go go_get_uri(uri, wait_chan)
+        go time_uri(uri, wait_chan)
     }
 
     var total int64
@@ -29,7 +32,9 @@ func avg_load_time(uri string, times int) float64 {
     return float64(total)/float64(times)/1000000000.0
 }
 
-func go_get_uri(uri string, res chan time.Duration) {
+// time_uri fecth the specified uri and send the time.Duration of the operation
+// to the specified res chan
+func time_uri(uri string, res chan time.Duration) {
 
     start_time := time.Now()
     get_uri(uri)
@@ -37,6 +42,8 @@ func go_get_uri(uri string, res chan time.Duration) {
     res <- time.Since(start_time)
 }
 
+// get_uri tryes to fetch the specified uri and returs its content as bytes
+// and/or the error if one has occurred
 func get_uri(uri string) (body []byte, err error) {
 
     resp, err := http.Get(uri)
@@ -51,6 +58,13 @@ func get_uri(uri string) (body []byte, err error) {
     body, err = ioutil.ReadAll(resp.Body)
 
     return
+}
+
+// Usage of the goperf tool
+var Usage = func() {
+    usage := "goperf --uri http://uri.to.test/ [--requests 10]"
+    fmt.Fprintf(os.Stderr, "Usage of %s:\n%s\n", os.Args[0], usage)
+    PrintDefaults()
 }
 
 func main(){
